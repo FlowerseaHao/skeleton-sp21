@@ -113,7 +113,13 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        board.setViewingPerspective(side);
+        for(int col = 0;col < board.size();col++){
+            if(processColumn(col)){
+                changed = true;
+            };
+        }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
@@ -121,6 +127,54 @@ public class Model extends Observable {
         return changed;
     }
 
+    /* check whether the tile(c,r) is null*/
+    private boolean isNull(int c, int r){
+        if(board.tile(c,r) == null){
+            return true;
+        }
+        return false;
+    }
+
+    /* updates the score */
+    private void updateScore(int v){
+        score += v*2;
+    }
+
+    /* Processes each single column,starting iteration from the raw 3*/
+    private boolean processColumn(int c) {
+        boolean changed = false;
+        int nullraw = -1;
+        boolean[] mergedRaw = new boolean[]{false,false,false,false};
+
+        for (int r = board.size()-2;r>=0;r--){
+            if(isNull(c,r)){
+                continue;
+            }
+            for(int pr = r+1;pr<board.size();pr++){
+                if(isNull(c,pr) && pr == board.size()-1){
+                    Tile t = board.tile(c,r);
+                    board.move(c,pr,t);
+                    changed = true;
+                } else if(isNull(c,pr)){
+                    nullraw = pr;
+                }else if(!isNull(c,pr) && !isNull(c,r)) {
+                    if (board.tile(c, pr).value() == board.tile(c, r).value() && !mergedRaw[pr]) {
+                        Tile t = board.tile(c, r);
+                        board.move(c, pr, t);
+                        updateScore(t.value());
+                        mergedRaw[pr] = true;
+                        changed = true;
+                    } else if (nullraw != -1) {
+                        Tile t = board.tile(c, r);
+                        board.move(c, nullraw, t);
+                        changed = true;
+                    }
+                }
+            }
+        }
+
+        return changed;
+    }
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
      */
@@ -138,6 +192,13 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for(int i = 0;i<b.size();i++){
+            for(int j = 0;j<b.size();j++){
+                if(b.tile(i,j) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +209,15 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int i = 0;i<b.size();i++){
+            for(int j = 0;j<b.size();j++){
+                if(b.tile(i,j) == null){
+                    continue;
+                }else if(b.tile(i,j).value() == MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +229,22 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        if(emptySpaceExists(b)){
+            return true;
+        }
+        for(int i = 0;i<b.size();i++){
+            for(int j = 0;j<b.size();j++){
+                if(i+1<b.size() && b.tile(i+1,j).value() == b.tile(i,j).value()){
+                    return true;
+                } else if(i-1>=0 && b.tile(i-1,j).value() == b.tile(i,j).value()){
+                    return true;
+                } else if(j+1<b.size() && b.tile(i,j+1).value() == b.tile(i,j).value()){
+                    return true;
+                } else if(j-1>=0 && b.tile(i,j-1).value() == b.tile(i,j).value()){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
