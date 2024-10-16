@@ -6,6 +6,11 @@ public class LinkedListDeque<T> {
         Node next;
         Node prev;
 
+        public Node(T i){
+            element = i;
+            next = null;
+            prev = null;
+        }
         public Node(T i,Node p,Node n){
             element = i;
             next = n;
@@ -16,12 +21,15 @@ public class LinkedListDeque<T> {
     private Node sentinel;
 
     public LinkedListDeque(){
-        sentinel = null;
+        sentinel = new Node(null);
+        sentinel.prev = sentinel;
+        sentinel.next = sentinel;
         size = 0;
     }
     public LinkedListDeque(T x){
-        sentinel.next = new Node(x,sentinel,sentinel);
-        sentinel.prev = sentinel.next;
+        sentinel = new Node(x);
+        sentinel.prev = sentinel;
+        sentinel.next = sentinel;
         size = 1;
     }
     public void addFirst(T item){

@@ -2,7 +2,7 @@ package gh2;
 
 /* Imports the required audio library from the
  * edu.princeton.cs.introcs package. */
-import edu.princeton.cs.introcs.StdAudio;
+
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class TestGuitarString  {
 
-    @Test
+    /*@Test
     public void testPluckTheAString() {
         GuitarString aString = new GuitarString(GuitarHeroLite.CONCERT_A);
         aString.pluck();
@@ -20,7 +20,7 @@ public class TestGuitarString  {
             StdAudio.play(aString.sample());
             aString.tic();
         }
-    }
+    }*/
 
     @Test
     public void testSample() {
