@@ -2,7 +2,7 @@ package gh2;
 
 /* Imports the required audio library from the
  * edu.princeton.cs.introcs package. */
-
+import edu.princeton.cs.introcs.StdAudio;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class TestGuitarString  {
 
-    /*@Test
+    @Test
     public void testPluckTheAString() {
         GuitarString aString = new GuitarString(GuitarHeroLite.CONCERT_A);
         aString.pluck();
@@ -20,7 +20,7 @@ public class TestGuitarString  {
             StdAudio.play(aString.sample());
             aString.tic();
         }
-    }*/
+    }
 
     @Test
     public void testSample() {
@@ -55,7 +55,7 @@ public class TestGuitarString  {
     @Test
     public void testTicCalculations() {
         // Create a GuitarString of frequency 11025, which
-        // is a Deque of length 4. 
+        // is a Deque of length 4.
         GuitarString s = new GuitarString(11025);
         s.pluck();
 
@@ -63,7 +63,7 @@ public class TestGuitarString  {
         double s1 = s.sample();
         s.tic();
         double s2 = s.sample();
-        s.tic(); 
+        s.tic();
         double s3 = s.sample();
         s.tic();
         double s4 = s.sample();
@@ -80,4 +80,3 @@ public class TestGuitarString  {
         assertEquals("Wrong tic value. Try running the testTic method.", expected, s5, 0.001);
     }
 }
-
