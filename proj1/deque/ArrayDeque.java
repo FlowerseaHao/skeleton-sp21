@@ -17,6 +17,28 @@ public class ArrayDeque<T> {
         return size == items.length;
     }
 
+    private boolean isNull(){
+        return size == 0;
+    }
+
+    private boolean outOfIndex(int index){
+        return index < 0 || index > items.length - 1;
+    }
+
+    private void updateNextFirst(){
+        nextFirst -= 1;
+        if(outOfIndex(nextFirst)){
+            nextFirst = items.length - 1;
+        }
+    }
+
+    private void updateNextLast(){
+        nextLast += 1;
+        if(outOfIndex(nextLast)){
+            nextLast = 0;
+        }
+    }
+
     private void resize(int capacity){
         T[] newArray = (T []) new Object[capacity];
         for(int i = 0;i<size;i++){
@@ -29,11 +51,11 @@ public class ArrayDeque<T> {
         if(isFull()){
             resize(items.length * 2);
         }
-        items[nextFirst] = item;
-        nextFirst -= 1;
-        if(nextFirst < 0){
-            nextFirst = items.length -1;
+        if(isNull()){
+            updateNextLast();
         }
+        items[nextFirst] = item;
+        updateNextFirst();
         size += 1;
     }
 
@@ -41,11 +63,12 @@ public class ArrayDeque<T> {
         if(isFull()){
             resize(items.length * 2);
         }
-        items[nextLast] = item;
-        nextLast += 1;
-        if(nextLast > items.length-1){
-            nextLast = 0;
+        if(isNull()){
+            updateNextFirst();
         }
+        items[nextLast] = item;
+        updateNextLast();
+
         size += 1;
     }
 
@@ -56,9 +79,7 @@ public class ArrayDeque<T> {
         return (double) size /items.length < 0.25;
     }
 
-    private boolean outOfIndex(int index){
-        return index < 0 || index > items.length - 1;
-    }
+
     public T removeFirst(){
         if(isEmpty()){
             return null;
