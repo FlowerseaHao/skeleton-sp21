@@ -13,6 +13,12 @@ public class ArrayDeque<T> implements Deque<T> {
         nextLast = 0;
     }
 
+    public ArrayDeque(int capacity){
+        items = (T [])new Object[capacity];
+        size = 0;
+        nextFirst = 0;
+        nextLast = 0;
+    }
     private boolean isFull(){
         return size == items.length;
     }
