@@ -1,64 +1,68 @@
 package deque;
 
-public class ArrayDeque<T> implements Deque<T> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     private T[] items;
     private int size;
     private int nextFirst;
     private int nextLast;
 
-    public ArrayDeque(){
+
+    public ArrayDeque() {
         items = (T []) new Object[8];
         size = 0;
         nextFirst = 0;
         nextLast = 0;
     }
 
-    public ArrayDeque(int capacity){
+    public ArrayDeque(int capacity) {
         items = (T [])new Object[capacity];
         size = 0;
         nextFirst = 0;
         nextLast = 0;
     }
-    private boolean isFull(){
+    private boolean isFull() {
         return size == items.length;
     }
 
-    private boolean isNull(){
+    private boolean isNull() {
         return size == 0;
     }
 
-    private boolean outOfIndex(int index){
+    private boolean outOfIndex(int index) {
         return index < 0 || index > items.length - 1;
     }
 
-    private void updateNextFirst(){
+    private void updateNextFirst() {
         nextFirst -= 1;
-        if(outOfIndex(nextFirst)){
+        if(outOfIndex(nextFirst)) {
             nextFirst = items.length - 1;
         }
     }
 
-    private void updateNextLast(){
+    private void updateNextLast() {
         nextLast += 1;
-        if(outOfIndex(nextLast)){
+        if(outOfIndex(nextLast)) {
             nextLast = 0;
         }
     }
 
-    private void resize(int capacity){
+    private void resize(int capacity) {
         T[] newArray = (T []) new Object[capacity];
-        for(int i = 0;i<size;i++){
+        for(int i = 0;i<size;i++) {
             newArray[i] = items[i];
         }
         items = newArray;
     }
 
     @Override
-    public void addFirst(T item){
-        if(isFull()){
+    public void addFirst(T item) {
+        if(isFull()) {
             resize(items.length * 2);
         }
-        if(isNull()){
+        if(isNull()) {
             updateNextLast();
         }
         items[nextFirst] = item;
@@ -67,11 +71,11 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public void addLast(T item){
-        if(isFull()){
+    public void addLast(T item) {
+        if(isFull()) {
             resize(items.length * 2);
         }
-        if(isNull()){
+        if(isNull()) {
             updateNextFirst();
         }
         items[nextLast] = item;
@@ -80,8 +84,8 @@ public class ArrayDeque<T> implements Deque<T> {
         size += 1;
     }
 
-    private boolean lowUsage(){
-        if(items.length < 16){
+    private boolean lowUsage() {
+        if(items.length < 16) {
             return false;
         }
         return (double) size /items.length < 0.25;
@@ -89,12 +93,12 @@ public class ArrayDeque<T> implements Deque<T> {
 
 
     @Override
-    public T removeFirst(){
+    public T removeFirst() {
         if(isEmpty()){
             return null;
         }
         nextFirst += 1;
-        if(nextFirst == items.length){
+        if(nextFirst == items.length) {
             nextFirst = 0;
         }
         size -= 1;
@@ -102,11 +106,11 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public T removeLast(){
+    public T removeLast() {
         if(isEmpty()){
             return null;
         }
-        if(lowUsage()){
+        if(lowUsage()) {
             resize(items.length / 2);
         }
         nextLast -= 1;
@@ -118,38 +122,61 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public int size(){
+    public int size() {
         return size;
     }
 
     @Override
-    public void printDeque(){
+    public void printDeque() {
         int index = nextFirst + 1;
         if(outOfIndex(index)){
             index = 0;
         }
 
-        for(int i = 0;i<size;i++){
+        for(int i = 0;i<size;i++) {
             System.out.print(items[index]);
             index += 1;
-            if(outOfIndex(index)){
+            if(outOfIndex(index)) {
                 index = 0;
             }
         }
     }
 
     @Override
-    public T get (int index){
+    public T get (int index) {
         int first = nextFirst + 1;
         if(outOfIndex(first)){
             first = 0;
         }
         int realIndex;
-        if(first + index > items.length - 1){
+        if(first + index > items.length - 1) {
             realIndex = first + index - items.length;
         } else {
             realIndex = first + index;
         }
         return items[realIndex];
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < size();
+            }
+
+            @Override
+            public T next() {
+                if(!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                T item = get(index);
+                index += 1;
+                return item;
+            }
+
+        };
     }
 }
