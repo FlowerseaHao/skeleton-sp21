@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private T[] items;
     private int size;
     private int nextFirst;
@@ -18,7 +18,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         nextLast = 0;
     }
 
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -29,7 +29,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
 
         ArrayDeque<T> other = (ArrayDeque<T>) o;
 
-        if (size() != other.size()){
+        if (size() != other.size()) {
             return false;
         }
 
@@ -79,10 +79,13 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
 
     @Override
     public void addFirst(T item) {
+        // if items is full, then resize it to double current length.
         if (isFull()) {
             resize(items.length * 2);
         }
-        if (isNull()) {
+
+        //At the very first, the nextFirst = nextLast = 0,after add the first item, the nextFirst = items.length - 1, the nextLast = 1
+        if (nextFirst == nextLast) {
             updateNextLast();
         }
         items[nextFirst] = item;
@@ -95,7 +98,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if (isFull()) {
             resize(items.length * 2);
         }
-        if (isNull()) {
+        if (nextFirst == nextLast) {
             updateNextFirst();
         }
         items[nextLast] = item;
@@ -108,7 +111,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         if (items.length < 16) {
             return false;
         }
-        return (double) size /items.length < 0.25;
+        return (double) size / items.length < 0.25;
     }
 
 
@@ -177,7 +180,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     }
 
     @Override
-    public T get (int index) {
+    public T get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
