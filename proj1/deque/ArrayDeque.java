@@ -47,10 +47,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return size == items.length;
     }
 
-    private boolean isNull() {
-        return size == 0;
-    }
-
     private boolean outOfIndex(int index) {
         return index < 0 || index > items.length - 1;
     }
@@ -84,7 +80,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             resize(items.length * 2);
         }
 
-        //At the very first, the nextFirst = nextLast = 0,after add the first item, the nextFirst = items.length - 1, the nextLast = 1
         if (nextFirst == nextLast) {
             updateNextLast();
         }
@@ -121,16 +116,23 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         }
 
+        int firstIndex = nextFirst + 1;
+        if (outOfIndex(firstIndex)) {
+            firstIndex = 0;
+        }
+
+        T itemToReturn = items[firstIndex];
+
+        items[firstIndex] = null;
+
+        nextFirst = firstIndex;
+
+        size -= 1;
+
         if (lowUsage()) {
             resize(items.length / 2);
         }
-
-        nextFirst += 1;
-        if (outOfIndex(nextFirst)) {
-            nextFirst = 0;
-        }
-        size -= 1;
-        return items[nextFirst];
+        return itemToReturn;
     }
 
     @Override
@@ -155,7 +157,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             resize(items.length / 2);
         }
 
-        return items[lastIndex];
+        return itemToReturn;
     }
 
     @Override
