@@ -19,9 +19,9 @@ public class CapersRepository {
 
     /** Main metadata folder. */
     // Hint: look at the `join` function in Utils
-    static final File CAPERS_FOLDER = join(CWD, ".carpers");
+    static final File CAPERS_FOLDER = join(CWD, ".capers");
 
-    static final File STORY = join(CAPERS_FOLDER, "story");
+    static final File STORY = new File(CAPERS_FOLDER, "story");
 
     /**
      * Does required filesystem operations to allow for persistence.
@@ -49,7 +49,7 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         text = readContentsAsString(STORY) + text + "\n";
-        writeContents(STORY, text);     // 覆盖文件内容
+        writeContents(STORY, text);
         System.out.println(text);
     }
 
